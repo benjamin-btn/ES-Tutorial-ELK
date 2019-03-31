@@ -1,0 +1,7 @@
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /home/deploy/ELK/sample/*.log
+output.logstash:
+  hosts: ["localhost:5044"]
