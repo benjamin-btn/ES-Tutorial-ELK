@@ -42,7 +42,6 @@ linux 배포판에 대해 패키지 설치를 지원합니다.
          6 : beats input, grok filter COMBINEDAPACHELOG, standard output
          7 : beats input, grok filter COMBINEDAPACHELOG, es output
          8 : beats input, grok filter COMBINEDAPACHELOG, es output with systemd
-         9 : start elk
 #########################################
 ```
 

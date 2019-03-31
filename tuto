@@ -84,13 +84,13 @@ function install_elk_packages
 
 }
 
-function es_set
+function es_start
 {
 	cp ${CONF_DIR}/${ES_CONF} ${PKGS_DIR}/${ES_DIR}/config/elasticsearch.yml
 	${PKGS_DIR}/${ES_DIR}/bin/elasticsearch -d
 }
 
-function kb_set
+function kb_start
 {
 	cp ${CONF_DIR}/${KB_CONF} ${PKGS_DIR}/${KB_DIR}/config/${KB_CONF}
 	sudo cp ${CONF_DIR}/${KB_SVC} ${SYS_DIR}/${KB_SVC}
@@ -98,38 +98,12 @@ function kb_set
 	sudo systemctl start ${KB_SVC}
 }
 
-function fb_set
+function fb_start
 {
 	cp ${CONF_DIR}/${TG_CONF1} ${PKGS_DIR}/${FB_DIR}/${FB_CONF}
 	sudo cp ${CONF_DIR}/${FB_SVC} ${SYS_DIR}/${FB_SVC}
 	daemon_reload
 	sudo systemctl start ${FB_SVC}
-}
-
-function es_start
-{
-        ${PKGS_DIR}/${ES_DIR}/bin/elasticsearch -d
-}
-
-function ls_start
-{
-        sudo cp ${CONF_DIR}/${LS_SVC} ${SYS_DIR}/${LS_SVC}
-        daemon_reload
-        sudo systemctl start ${LS_SVC}
-}
-
-function kb_start
-{
-        sudo cp ${CONF_DIR}/${KB_SVC} ${SYS_DIR}/${KB_SVC}
-        daemon_reload
-        sudo systemctl start ${KB_SVC}
-}
-
-function fb_start
-{
-        sudo cp ${CONF_DIR}/${FB_SVC} ${SYS_DIR}/${FB_SVC}
-        daemon_reload
-        sudo systemctl start ${FB_SVC}
 }
 
 function no_filter
@@ -181,27 +155,25 @@ if [ -z $1 ]; then
         echo " $ ./tuto [Command]"
         echo "#####################%%%%%%##############"
         echo "         1 : install elk packages"
-        echo "         2 : set elk"
+        echo "         2 : start es, kibana, filebeat"
         echo "         3 : standard input/output, no filters"
         echo "         4 : standard input/output, simple filter"
         echo "         5 : beats input, no filter, standard output"
         echo "         6 : beats input, grok filter COMBINEDAPACHELOG, standard output"
         echo "         7 : beats input, grok filter COMBINEDAPACHELOG, es output"
-        echo "         8 : beats input, grok filter COMBINEDAPACHELOG, es output with systemd"
-        echo "         9 : start elk"
+        echo "         8 : beats input, grok filter COMBINEDAPACHELOG, with systemd"
         echo "#########################################";
         exit 1;
 fi
 
 case "$1" in
         "1" ) install_elk_packages;;
-        "2" ) es_set; kb_set; fb_set;;
+        "2" ) es_start; kb_set; fb_set;;
 	"3" ) no_filter;;
         "4" ) simple_filter;;
         "5" ) beats_filter;;
         "6" ) apache_filter;;
         "7" ) last_filter;;
         "8" ) systemd_filter;;
-        "9" ) es_start; ls_start; kb_start; fb_start;;
         *) echo "Incorrect Command" ;;
 esac
