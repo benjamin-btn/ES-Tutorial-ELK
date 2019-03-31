@@ -5,8 +5,8 @@ After=network.target
 #ConditionPathExists=/etc/logstash.conf
 
 [Service]
-User=deploy
-Group=deploy
+User=ec2-user
+Group=ec2-user
 ExecStart=/home/ec2-user/ES-Tutorial-ELK/packages/logstash/bin/logstash
 
 [Install]
