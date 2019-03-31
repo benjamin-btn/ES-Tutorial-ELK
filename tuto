@@ -80,13 +80,13 @@ function install_elk_packages
 
 function es_set
 {
-	cp ${CONF_DIR}/${ES_CONF_DIR} ${PKGS_DIR}/${ES_DIR}/config/elasticsearch.yml
+	cp ${CONF_DIR}/${ES_CONF} ${PKGS_DIR}/${ES_DIR}/config/elasticsearch.yml
 	${PKGS_DIR}/${ES_DIR}/bin/elasticsearch -d
 }
 
 function kb_set
 {
-	cp ${CONF_DIR}/${KB_CONF_DIR} ${PKGS_DIR}/${KB_DIR}/config/${KB_CONF_DIR}
+	cp ${CONF_DIR}/${KB_CONF} ${PKGS_DIR}/${KB_DIR}/config/${KB_CONF}
 	sudo cp ${CONF_DIR}/${KB_SVC} ${SYS_DIR}/${KB_SVC}
 	daemon_reload
 	sudo systemctl start ${KB_SVC}
@@ -94,7 +94,7 @@ function kb_set
 
 function fb_set
 {
-	cp ${CONF_DIR}/${TG_CONF1} ${PKGS_DIR}/${FB_DIR}/${FB_CONF_DIR}
+	cp ${CONF_DIR}/${TG_CONF1} ${PKGS_DIR}/${FB_DIR}/${FB_CONF}
 	sudo cp ${CONF_DIR}/${FB_SVC} ${SYS_DIR}/${FB_SVC}
 	daemon_reload
 	sudo systemctl start ${FB_SVC}
@@ -138,7 +138,7 @@ function simple_filter
 
 function beats_filter
 {
-        cp ${CONF_DIR}/${TG_CONF2} ${PKGS_DIR}/${FB_DIR}/${FB_CONF_DIR}
+        cp ${CONF_DIR}/${TG_CONF2} ${PKGS_DIR}/${FB_DIR}/${FB_CONF}
         sudo systemctl restart ${FB_SVC}
         ${PKGS_DIR}/${LS_DIR}/bin/logstash -f logstash_conf/beats.conf
 }
