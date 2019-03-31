@@ -42,6 +42,14 @@ linux 배포판에 대해 패키지 설치를 지원합니다.
          8 : beats input, grok filter COMBINEDAPACHELOG, es output with systemd
          9 : start elk
 #########################################
+
+[ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-ELK]$ ./tuto 1
+# /etc/security/limits/conf 수정사항을 반영하기 위해 sudo su - ec2-user 를 하였습니다.
+# home directory 로 돌아가기 때문에 다시 튜토리얼 디렉토리로 위치를 변경시켜줍니다.
+
+[ec2-user@ip-xxx-xxx-xxx-xxx ~]$ cd ES-Tutorial-ELK
+
+[ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-ELK]$ ./tuto 2
 ```
 
 ## ELK Tutorial 1 - Elasticsearch, Kibana, Filebeat 세팅
@@ -98,20 +106,19 @@ output.elasticsearch:
 ### Elasticsearch
 
 ```bash
-$ curl localhost:9200
-
+[ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-ELK]$ curl localhost:9200
 {
-  "name" : "UZU8SQG",
+  "name" : "KSP-DCP",
   "cluster_name" : "elasticsearch",
-  "cluster_uuid" : "YP3Lt-53QP6H5Ay_M6UTjw",
+  "cluster_uuid" : "rR30tBrtTl6LDq4nkzapxA",
   "version" : {
     "number" : "6.7.0",
     "build_flavor" : "default",
     "build_type" : "tar",
-    "build_hash" : "9434bed",
-    "build_date" : "2018-11-29T23:58:20.891072Z",
+    "build_hash" : "8453f77",
+    "build_date" : "2019-03-21T15:32:29.844721Z",
     "build_snapshot" : false,
-    "lucene_version" : "7.5.0",
+    "lucene_version" : "7.7.0",
     "minimum_wire_compatibility_version" : "5.6.0",
     "minimum_index_compatibility_version" : "5.0.0"
   },
@@ -120,9 +127,14 @@ $ curl localhost:9200
 
 $ curl -H 'Content-Type: application/json' -XPOST localhost:9200/firstindex/_doc -d '{ "mykey": "myvalue" }'
 ```
+* Web Browser 에 [http://ec2-52-221-155-168.ap-southeast-1.compute.amazonaws.com:9100/index.html?base_uri=http://{FQDN}:9200](http://ec2-52-221-155-168.ap-southeast-1.compute.amazonaws.com:9100/index.html?base_uri=http://FQDN:9200) 실행
+
+![Optional Text](image/es-head1.png)
 
 ### Kibana
-* Web Browser 에 http://{FQDN}:5601 실행
+* Web Browser 에 [http://{FQDN}:5601](http://{FQDN}:5601) 실행
+
+![Optional Text](image/kibana.png)
 
 ### Filebeat
 * Process 확인 및 Elasticsearch 에 filebeat 인덱스 생성 여부 확인
