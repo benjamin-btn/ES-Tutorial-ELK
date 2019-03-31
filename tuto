@@ -168,7 +168,7 @@ fi
 
 case "$1" in
         "1" ) install_elk_packages;;
-        "2" ) es_start; kb_set; fb_set;;
+        "2" ) es_start; kb_start; fb_start;;
 	"3" ) no_filter;;
         "4" ) simple_filter;;
         "5" ) beats_filter;;
