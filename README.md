@@ -292,14 +292,14 @@ systemd 에 등록하여 대몬으로 유지, viasystemd-xxxx.xx.xx 인덱스 �
 ## ELK Tutorial - Kibana 활용
 키바나 인덱스 패턴 만들기
 
-![Optional Text](image/kibana1..png)
+![Optional Text](image/kibana1.png)
 Kibana Management 메뉴 선택
 
-![Optional Text](image/kibana2..png)
+![Optional Text](image/kibana2.png)
 Kibana Index Patterns 선택 후 인덱스 이름 설정(logstash-\*)
 
-![Optional Text](image/kibana3..png)
+![Optional Text](image/kibana3.png)
 timestamp 설정 후 인덱스 패턴 생성
 
-![Optional Text](image/kibana4..png)
+![Optional Text](image/kibana4.png)
 Kibana Discovery 에서 해당 패턴으로 문서 확인
