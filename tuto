@@ -80,22 +80,22 @@ function install_elk_packages
 
 function es_set
 {
-	cp ${CONF_DIR}/${ES_CONF} -O ${PKGS_DIR}/${ES_DIR}/config/elasticsearch.yml
+	cp ${CONF_DIR}/${ES_CONF} ${PKGS_DIR}/${ES_DIR}/config/elasticsearch.yml
 	${PKGS_DIR}/${ES_DIR}/bin/elasticsearch -d
 }
 
 function kb_set
 {
-	cp ${CONF_DIR}/${KB_CONF} -O ${PKGS_DIR}/${KB_DIR}/config/${KB_CONF}
-	sudo cp ${CONF_DIR}/${KB_SVC} -O ${SYS_DIR}/${KB_SVC}
+	cp ${CONF_DIR}/${KB_CONF} ${PKGS_DIR}/${KB_DIR}/config/${KB_CONF}
+	sudo cp ${CONF_DIR}/${KB_SVC} ${SYS_DIR}/${KB_SVC}
 	daemon_reload
 	sudo systemctl start ${KB_SVC}
 }
 
 function fb_set
 {
-	cp ${CONF_DIR}/${TG_CONF1} -O ${PKGS_DIR}/${FB_DIR}/${FB_CONF}
-	sudo cp ${CONF_DIR}/${FB_SVC} -O ${SYS_DIR}/${FB_SVC}
+	cp ${CONF_DIR}/${TG_CONF1} ${PKGS_DIR}/${FB_DIR}/${FB_CONF}
+	sudo cp ${CONF_DIR}/${FB_SVC} ${SYS_DIR}/${FB_SVC}
 	daemon_reload
 	sudo systemctl start ${FB_SVC}
 }
@@ -107,21 +107,21 @@ function es_start
 
 function ls_start
 {
-        sudo cp ${CONF}/${LS_SVC} -O ${SYS_DIR}/${LS_SVC}
+        sudo cp ${CONF}/${LS_SVC} ${SYS_DIR}/${LS_SVC}
         daemon_reload
         sudo systemctl start ${LS_SVC}
 }
 
 function kb_start
 {
-        sudo cp ${CONF}/${KB_SVC} -O ${SYS_DIR}/${KB_SVC}
+        sudo cp ${CONF}/${KB_SVC} ${SYS_DIR}/${KB_SVC}
         daemon_reload
         sudo systemctl start ${KB_SVC}
 }
 
 function fb_start
 {
-        sudo cp ${CONF}/${FB_SVC} -O ${SYS_DIR}/${FB_SVC}
+        sudo cp ${CONF}/${FB_SVC} ${SYS_DIR}/${FB_SVC}
         daemon_reload
         sudo systemctl start ${FB_SVC}
 }
@@ -138,7 +138,7 @@ function simple_filter
 
 function beats_filter
 {
-        cp ${CONF}/${TG_CONF2} -O ${PKGS_DIR}/${FB_DIR}/${FB_CONF}
+        cp ${CONF}/${TG_CONF2} ${PKGS_DIR}/${FB_DIR}/${FB_CONF}
         sudo systemctl restart ${FB_SVC}
         ${PKGS_DIR}/${LS_DIR}/bin/logstash -f logstash_conf/beats.conf
 }
@@ -155,10 +155,10 @@ function last_filter
 
 function systemd_filter
 {
-        cp ${CONF}/${LS_CONF1} -O ${PKGS_DIR}/${LS_DIR}/config/${LS_CONF1}
-        cp ${CONF}/${LS_CONF2} -O ${PKGS_DIR}/${LS_DIR}/config/${LS_CONF2}
-        cp ${CONF}/${LS_CONF3} -O ${PKGS_DIR}/${LS_DIR}/config/${LS_CONF3}
-        sudo cp ${CONF}/${LS_SVC} -O ${SYS_DIR}/${LS_SVC}
+        cp ${CONF}/${LS_CONF1} ${PKGS_DIR}/${LS_DIR}/config/${LS_CONF1}
+        cp ${CONF}/${LS_CONF2} ${PKGS_DIR}/${LS_DIR}/config/${LS_CONF2}
+        cp ${CONF}/${LS_CONF3} ${PKGS_DIR}/${LS_DIR}/config/${LS_CONF3}
+        sudo cp ${CONF}/${LS_SVC} ${SYS_DIR}/${LS_SVC}
         sudo systemctl daemon-reload
         sudo systemctl start ${LS_SVC}
 
