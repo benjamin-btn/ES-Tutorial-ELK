@@ -1,0 +1,97 @@
+#!/bin/sh
+
+SVR_URL="http://kin.is.kakaocorp.com"
+CONF_REPO="es"
+CONF_URL=${SVR_URL}/${CONF_REPO}
+
+ES_DIR="elasticsearch"
+LS_DIR="logstash"
+KB_DIR="kibana"
+FB_DIR="filebeat"
+PKGS_DIR="packages"
+SYS_DIR="/etc/systemd/system"
+
+USER=$(whoami)
+PWD=$(pwd)
+
+if [ $USER == "root" ]; then
+	echo "root is not permitted"
+	exit -1
+fi
+
+if [ $PWD != "/home/deploy/ELK" ]; then
+	pwd
+	echo "/home/deploy/ELK path is permitted only"
+	exit -1
+fi
+
+function no_filter
+{
+	${PKGS_DIR}/${LS_DIR}/bin/logstash -e 'input { stdin { } } output { stdout {} }'
+}
+
+function simple_filter
+{
+	${PKGS_DIR}/${LS_DIR}/bin/logstash -f logstash_conf/simple.conf
+}
+
+function beats_filter
+{
+	FB_CONF="filebeat.yml"
+        TG_CONF="filebeat.yml_tuto2"
+        FB_SVC="filebeat.service"
+
+        wget ${CONF_URL}/${TG_CONF} -O ${PKGS_DIR}/${FB_DIR}/${FB_CONF}
+        sudo systemctl restart ${FB_SVC}
+	${PKGS_DIR}/${LS_DIR}/bin/logstash -f logstash_conf/beats.conf
+}
+
+function apache_filter
+{
+	${PKGS_DIR}/${LS_DIR}/bin/logstash -f logstash_conf/apache.conf
+}
+
+function last_filter
+{
+	${PKGS_DIR}/${LS_DIR}/bin/logstash -f logstash_conf/es.conf
+}
+
+function systemd_filter
+{
+        LS_CONF1="logstash.yml"
+        LS_CONF2="pipelines.yml"
+        LS_CONF3="logstash-sample.conf"
+        LS_SVC="logstash.service"
+
+        wget ${CONF_URL}/${LS_CONF1} -O ${PKGS_DIR}/${LS_DIR}/config/${LS_CONF1}
+        wget ${CONF_URL}/${LS_CONF2} -O ${PKGS_DIR}/${LS_DIR}/config/${LS_CONF2}
+        wget ${CONF_URL}/${LS_CONF3} -O ${PKGS_DIR}/${LS_DIR}/config/${LS_CONF3}
+        sudo wget ${CONF_URL}/${LS_SVC} -O ${SYS_DIR}/${LS_SVC}
+	sudo systemctl daemon-reload
+        sudo systemctl start ${LS_SVC}
+
+}
+
+if [ -z $1 ]; then
+        echo "##################### Menu ##############"
+        echo " $ ./tuto2 [Command]"
+        echo "#####################%%%%%%##############"
+        echo "         1 : standard input/output, no filters"
+        echo "         2 : standard input/output, simple filter"
+        echo "         3 : beats input, no filter, standard output"
+        echo "         4 : beats input, grok filter COMBINEDAPACHELOG, standard output"
+        echo "         5 : beats input, grok filter COMBINEDAPACHELOG, es output"
+        echo "         6 : beats input, grok filter COMBINEDAPACHELOG, es output with systemd"
+        echo "#########################################";
+        exit 1;
+fi
+
+case "$1" in
+        "1" ) no_filter;;
+        "2" ) simple_filter;;
+        "3" ) beats_filter;;
+        "4" ) apache_filter;;
+        "5" ) last_filter;;
+        "6" ) systemd_filter;;
+        *) echo "Incorrect Command" ;;
+esac

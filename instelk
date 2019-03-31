@@ -1,0 +1,42 @@
+#!/bin/sh
+
+SVR_URL="http://kin.is.kakaocorp.com"
+PKGS_REPO="es/repos"
+VER="6.7.0"
+ES=elasticsearch-${VER}.tar.gz
+LS=logstash-${VER}.tar.gz
+KB_LN=kibana-${VER}-linux-x86_64.tar.gz
+FB_LN=filebeat-${VER}-linux-x86_64.tar.gz
+
+ES_PKGS=${SVR_URL}/${PKGS_REPO}/${ES}
+LS_PKGS=${SVR_URL}/${PKGS_REPO}/${LS}
+KB_LN_PKGS=${SVR_URL}/${PKGS_REPO}/${KB_LN}
+FB_LN_PKGS=${SVR_URL}/${PKGS_REPO}/${FB_LN}
+
+PKGS_DIR="packages"
+
+USER=$(whoami)
+echo $USER
+
+if [ $USER == "root" ]; then
+	echo "root is not permitted"
+	exit -1
+fi
+
+mkdir ${PKGS_DIR}
+cd ${PKGS_DIR}
+
+wget ${ES_PKGS}
+wget ${LS_PKGS}
+wget ${KB_LN_PKGS}
+wget ${FB_LN_PKGS}
+
+tar xfz ${ES}
+tar xfz ${LS}
+tar xfz ${KB_LN}
+tar xfz ${FB_LN}
+
+ln -s ./elasticsearch-6.5.2 elasticsearch
+ln -s ./logstash-6.5.2 logstash
+ln -s ./kibana-6.5.2-linux-x86_64 kibana
+ln -s ./filebeat-6.5.2-linux-x86_64 filebeat

@@ -1,0 +1,14 @@
+[Unit]
+Description=filebeat
+Documentation=https://www.elastic.co/guide/en/beats/filebeat/current/index.html
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=deploy
+Group=deploy
+ExecStart=/home/deploy/ELK/packages/filebeat/filebeat -c /home/deploy/ELK/packages/filebeat/filebeat.yml -path.home /home/deploy/ELK/packages/filebeat -path.config /home/deploy/ELK/packages/filebeat -path.data /home/deploy/ELK/packages/filebeat/data -path.logs /home/deploy/ELK/packages/filebeat/logs
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

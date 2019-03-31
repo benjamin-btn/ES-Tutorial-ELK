@@ -1,0 +1,13 @@
+[Unit]
+Description=Logstash
+Documentation=https://www.elastic.co/products/logstash
+After=network.target
+#ConditionPathExists=/etc/logstash.conf
+
+[Service]
+User=deploy
+Group=deploy
+ExecStart=/home/deploy/ELK/packages/logstash/bin/logstash
+
+[Install]
+WantedBy=multi-user.target
