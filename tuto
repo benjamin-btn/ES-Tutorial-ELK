@@ -80,6 +80,10 @@ function install_elk_packages
 
 function es_set
 {
+	sudo echo "ec2-user		soft    nofile          65536" >> /etc/security/limits.conf
+	sudo echo "ec2-user		hard    nofile          65536" >> /etc/security/limits.conf
+	sudo echo "vm.max_map_count = 262144" >> /etc/sysctl.conf
+	sudo sysctl -p
 	cp ${CONF_DIR}/${ES_CONF} ${PKGS_DIR}/${ES_DIR}/config/elasticsearch.yml
 	${PKGS_DIR}/${ES_DIR}/bin/elasticsearch -d
 }
