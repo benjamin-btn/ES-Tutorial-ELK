@@ -57,6 +57,7 @@ fi
 function install_elk_packages
 {
 
+	sudo yum -y install wget
 	mkdir ${PKGS_DIR}
 	cd ${PKGS_DIR}
 
