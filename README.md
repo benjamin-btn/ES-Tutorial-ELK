@@ -4,6 +4,8 @@ ElasticSearch ELK 튜토리얼을 기술합니다.
 
 본 스크립트는 외부 공인망을 기준으로 작성되었습니다.
 
+본 튜토리얼은 Elastic Evangelist 김종민님의 [웨비나](https://www.elastic.co/kr/webinars/getting-started-logstash)를 참고하여 작성하였습니다.
+
 ## Product 별 버전 상세
 ```
 Latest ELK Version. 6.7.0(2019/04/01 기준 Latest Ver.)
@@ -15,7 +17,7 @@ Latest ELK Version. 6.7.0(2019/04/01 기준 Latest Ver.)
 
 최신 버전은 [Elasticsearch 공식 홈페이지](https://www.elastic.co/downloads) 에서 다운로드 가능합니다.
 
-## ELK Product 설치
+## ELK Tutorial 준비
 
 이 튜토리얼에서는 tar.gz 파일을 이용하여 실습합니다.
 설치는 non-root 계정으로 설치합니다.
@@ -42,17 +44,21 @@ linux 배포판에 대해 패키지 설치를 지원합니다.
          8 : beats input, grok filter COMBINEDAPACHELOG, es output with systemd
          9 : start elk
 #########################################
+```
 
+## ELK Tutorial 1~2 - Elasticsearch, Kibana, Filebeat 세팅
+
+```bash
 [ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-ELK]$ ./tuto 1
-# /etc/security/limits/conf 수정사항을 반영하기 위해 sudo su - ec2-user 를 하였습니다.
-# home directory 로 돌아가기 때문에 다시 튜토리얼 디렉토리로 위치를 변경시켜줍니다.
 
 [ec2-user@ip-xxx-xxx-xxx-xxx ~]$ cd ES-Tutorial-ELK
 
 [ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-ELK]$ ./tuto 2
 ```
 
-## ELK Tutorial 1 - Elasticsearch, Kibana, Filebeat 세팅
+/etc/security/limits/conf 수정사항을 반영하기 위해 ./tuto 1 에서 sudo su - ec2-user 를 하였습니다.
+
+home directory 로 돌아가기 때문에 다시 튜토리얼 디렉토리로 위치를 변경시켜 ./tuto 2 를 실행시켜줍니다.
 
 ### Elasticsearch
 * packages/elasticsearch/config/elasticsearch.yml
@@ -141,72 +147,159 @@ $ curl -H 'Content-Type: application/json' -XPOST localhost:9200/firstindex/_doc
   - http://es-head.is.daumkakao.io:9100/index.html?base_uri=http://{FQDN}:9200
 
 
-## ELK Tutorial 2 - Logstash 활용
+## ELK Tutorial 3~8 - Logstash 활용
 
-### Logstash
-* tuto 2-1. filter 없이 standard input 을 logstash 가 받아 standard output 으로 출력
-  - packages/logstash/bin/logstash -e 'input { stdin { } } output { stdout {} }'
-
-* tuto 2-2. grok filter 활용, Hello 뒤에 나오는 이름에 name key 를 매칭
-  - packages/logstash/bin/logstash -f logstash_conf/simple.conf
-
-* tuto 2-3. input 에 beats 정의, filter 없이 rubydebug codec 을 통해 standard output 으로 출력
-  - packages/logstash/bin/logstash -f logstash_conf/beats.conf
-
-* tuto 2-4. input 에 beats 정의, grok filter 를 통해 COMBINEDAPACHELOG 로 message 필터링, rubydebug codec 을 통해 standard output 으로 출력
-  - packages/logstash/bin/logstash -f logstash_conf/apache.conf
-
-* tuto 2-5. input 에 beats 정의, grok filter 를 통해 COMBINEDAPACHELOG 로 message 필터링, rubydebug codec 을 통해 standard output 으로 출력과 동시에 ES 에 저장
-  - packages/logstash/bin/logstash -f logstash_conf/es.conf
-
-* tuto 2-6. systemd 를 통한 logstash service
-* packages/logstash/config/logstash.yml
-  - config.reload.automatic: true -> 3s 주석해제 및 true 설정
-  - config.reload.interval: 3s -> 주석해제
-
-* packages/logstash/config/pipelines.yml
-  - pipeline.id: my-pipe -> 주석해제 및 pipeline id 수정
-  - path.config: "/home/ec2-user/ES-Tutorial-ELK/packages/logstash/config/\*.conf" -> 주석해제 및 conf 설정
+### tuto 3. filter 없이 standard input 을 logstash 가 받아 standard output 으로 출력
+packages/logstash/bin/logstash -e 'input { stdin { } } output { stdout {} }'
 
 ```bash
-[ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-ELK]$ vi packages/logstash/config/logstash.yml
-config.reload.automatic: true
-config.reload.interval: 3s
-
-[ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-ELK]$ vi packages/logstash/config/pipelines.yml
-- pipeline.id: systemd-pipe
-path.config: "/home/ec2-user/ES-Tutorial-ELK/packages/logstash/config/*.conf"
+[ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-ELK]$ ./tuto 3
+[2019-03-31T14:07:08,465][INFO ][logstash.agent           ] Successfully started Logstash API endpoint {:port=>9600}
+Hello benjamin
+/home/ec2-user/ES-Tutorial-ELK/packages/logstash-6.7.0/vendor/bundle/jruby/2.5.0/gems/awesome_print-1.7.0/lib/awesome_print/formatters/base_formatter.rb:31: warning: constant ::Fixnum is deprecated
+{
+    "@timestamp" => 2019-03-31T14:27:30.761Z,
+      "@version" => "1",
+       "message" => "Hello benjamin",
+          "host" => "ip-172-31-0-154.ap-southeast-1.compute.internal"
+}
 ```
+정상적으로 시작되었으면 Hello benjamin 이라고 텍스트를 입력
+
+ctrl+c 로 ./tuto 3 중단
+
+### tuto 4. grok filter 활용, Hello 뒤에 나오는 이름에 name key 를 매칭
+packages/logstash/bin/logstash -f logstash_conf/simple.conf
+
+```bash
+[ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-ELK]$ ./tuto 4
+[2019-03-31T14:30:22,561][INFO ][logstash.agent           ] Successfully started Logstash API endpoint {:port=>9600}
+Hello benjamin
+/home/ec2-user/ES-Tutorial-ELK/packages/logstash-6.7.0/vendor/bundle/jruby/2.5.0/gems/awesome_print-1.7.0/lib/awesome_print/formatters/base_formatter.rb:31: warning: constant ::Fixnum is deprecated
+{
+          "host" => "ip-172-31-0-154.ap-southeast-1.compute.internal",
+       "message" => "Hello benjamin",
+          "name" => "benjamin",
+      "@version" => "1",
+    "@timestamp" => 2019-03-31T14:30:27.454Z
+```
+정상적으로 시작되었으면 Hello benjamin 이라고 텍스트를 입력
+
+ctrl+c 로 ./tuto 4 중단
+
+### tuto 5. input 에 beats 정의, filter 없이 rubydebug codec 을 통해 standard output 으로 출력
+packages/logstash/bin/logstash -f logstash_conf/beats.conf
+
+conf/filebeat.yml_tuto2 를 통해 파일비트가 logstash 를 output 으로 스트리밍 진행
+
+```bash
+[ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-ELK]$ ./tuto 5
+[2019-03-31T14:35:26,928][INFO ][logstash.agent           ] Successfully started Logstash API endpoint {:port=>9600}
+
+[ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-ELK]$ cp /home/ec2-user/ES-Tutorial-ELK/sample/logstash-tutorial.log /home/ec2-user/ES-Tutorial-ELK/sample/logstash-tutorial-tuto5.log
+...
+       "message" => "218.30.103.62 - - [04/Jan/2015:05:28:21 +0000] \"GET /blog/productivity/better-zsh-xterm-title-fix.html HTTP/1.1\" 200 10185 \"-\" \"Sogou web spider/4.0(+http://www.sogou.com/docs/help/webmasters.htm#07)\"",
+...
+    "@timestamp" => 2019-03-31T14:41:52.086Z,
+          "beat" => {
+            "name" => "ip-172-31-0-154.ap-southeast-1.compute.internal",
+         "version" => "6.7.0",
+        "hostname" => "ip-172-31-0-154.ap-southeast-1.compute.internal"
+    },
+      "@version" => "1"
+}
+
+```
+
+다른 터미널로 서버 접속 후 파일비트가 로그를 추가로 스트리밍 할 수 있도록 로그파일 복사
+
+ctrl+c 로 ./tuto 5 중단
+
+### tuto 6. input 에 beats 정의, grok filter 를 통해 COMBINEDAPACHELOG 로 message 필터링, rubydebug codec 을 통해 standard output 으로 출력
+packages/logstash/bin/logstash -f logstash_conf/apache.conf
+
+```bash
+[ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-ELK]$ ./tuto 6
+[2019-03-31T14:35:26,928][INFO ][logstash.agent           ] Successfully started Logstash API endpoint {:port=>9600}
+
+[ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-ELK]$ cp /home/ec2-user/ES-Tutorial-ELK/sample/logstash-tutorial.log /home/ec2-user/ES-Tutorial-ELK/sample/logstash-tutorial-tuto6.log
+...
+       "clientip" => "86.1.76.62",
+           "host" => {
+        "name" => "ip-172-31-0-154.ap-southeast-1.compute.internal"
+    },
+    "httpversion" => "1.1",
+     "@timestamp" => 2019-03-31T14:47:22.116Z,
+           "verb" => "GET"
+
+```
+
+다른 터미널로 서버 접속 후 파일비트가 로그를 추가로 스트리밍 할 수 있도록 로그파일 복사
+
+message 영역이 grok filter 에 의해 유의미한 필드들로 나뉨
+
+ctrl+c 로 ./tuto 6 중단
+
+### tuto 7. input 에 beats 정의, grok filter 를 통해 COMBINEDAPACHELOG 로 message 필터링, rubydebug codec 을 통해 standard output 으로 출력과 동시에 ES 에 저장
+packages/logstash/bin/logstash -f logstash_conf/es.conf
+
+```bash
+[ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-ELK]$ ./tuto 7
+[2019-03-31T14:35:26,928][INFO ][logstash.agent           ] Successfully started Logstash API endpoint {:port=>9600}
+
+[ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-ELK]$ cp /home/ec2-user/ES-Tutorial-ELK/sample/logstash-tutorial.log /home/ec2-user/ES-Tutorial-ELK/sample/logstash-tutorial-tuto7.log
+...
+       "clientip" => "86.1.76.62",
+          "bytes" => "4877",
+      "timestamp" => "04/Jan/2015:05:30:37 +0000",
+     "prospector" => {
+        "type" => "log"
+
+```
+
+다른 터미널로 서버 접속 후 파일비트가 로그를 추가로 스트리밍 할 수 있도록 로그파일 복사
+
+ES 에 logstash-xxxx.xx.xx 인덱스 추가 확인
+
+![Optional Text](image/es-head2.png)
+
+ctrl+c 로 ./tuto 7 중단
+
+### tuto 8. systemd 를 통한 logstash service
+packages/logstash/config/logstash.yml
+  * config.reload.automatic: true -> 3s 주석해제 및 true 설정
+  * config.reload.interval: 3s -> 주석해제
+
+packages/logstash/config/pipelines.yml
+  * pipeline.id: my-pipe -> 주석해제 및 pipeline id 수정
+  * path.config: "/home/ec2-user/ES-Tutorial-ELK/packages/logstash/config/\*.conf" -> 주석해제 및 conf 설정
+
+```bash
+[ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-ELK]$ ./tuto 8
+
+[ec2-user@ip-xxx-xxx-xxx-xxx ES-Tutorial-ELK]$ cp /home/ec2-user/ES-Tutorial-ELK/sample/logstash-tutorial.log /home/ec2-user/ES-Tutorial-ELK/sample/logstash-tutorial-tuto8.log
+```
+
+다른 터미널로 서버 접속 후 파일비트가 로그를 추가로 스트리밍 할 수 있도록 로그파일 복사
+
+systemd 에 등록하여 대몬으로 유지, viasystemd-xxxx.xx.xx 인덱스 생성 확인
+
+![Optional Text](image/es-head3.png)
+
 > [logstash patterns](https://github.com/logstash-plugins/logstash-patterns-core/tree/master/patterns) 를 사용하여 filter 를 정의
 > [logstash plugins](https://github.com/logstash-plugins) 를 사용하여 inputs, filters, outputs 를 정의
 
-## Smoke Test
+## ELK Tutorial - Kibana 활용
+키바나 인덱스 패턴 만들기
 
-### Logstash
+![Optional Text](image/kibana1..png)
+Kibana Management 메뉴 선택
 
-```bash
-$ curl localhost:9600
+![Optional Text](image/kibana2..png)
+Kibana Index Patterns 선택 후 인덱스 이름 설정(logstash-\*)
 
-{"host":"ip-xxx-xxx-xxx-xxx.ap-southeast-1.compute.internal","version":"6.7.0","http_address":"127.0.0.1:9600","id":"f56379d1-e521-436e-85f0-890ca0368548","name":"ip-xxx-xxx-xxx-xxx.ap-southeast-1.compute.internal","build_date":"2018-11-30T00:45:25+00:00","build_sha":"c7710db828f75e2d3f1682a28a3579901d9b73e6","build_snapshot":false}
+![Optional Text](image/kibana3..png)
+timestamp 설정 후 인덱스 패턴 생성
 
-$ ./tuto2 1
-Hello Benji
-{
-      "@version" => "1",
-       "message" => "Hello Benji",
-          "host" => "ip-xxx-xxx-xxx-xxx.ap-southeast-1.compute.internal",
-    "@timestamp" => 2018-12-17T16:09:19.743Z
-}
-
-$ ./tuto2 2
-Hello Benji
-{
-      "@version" => "1",
-          "host" => "ip-xxx-xxx-xxx-xxx.ap-southeast-1.compute.internal",
-          "name" => "Benji",
-    "@timestamp" => 2018-12-17T16:22:56.7.0Z,
-       "message" => "Hello Benji"
-}
-```
-
-
+![Optional Text](image/kibana4..png)
+Kibana Discovery 에서 해당 패턴으로 문서 확인
