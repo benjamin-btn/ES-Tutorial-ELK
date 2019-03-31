@@ -6,14 +6,16 @@ ElasticSearch ELK 튜토리얼을 기술합니다.
 
 본 튜토리얼은 Elastic Evangelist 김종민님의 [웨비나](https://www.elastic.co/kr/webinars/getting-started-logstash)를 참고하여 작성하였습니다.
 
+8GB 이상의 메모리가 확보된 시스템에서 실행을 권고합니다.
+
 ## Product 별 버전 상세
 ```
 Latest ELK Version. 6.7.0(2019/04/01 기준 Latest Ver.)
 ```
-* [Elasticsearch](https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.7.0.rpm)
-* [Logstash](https://artifacts.elastic.co/downloads/logstash/logstash-6.7.0.rpm)
-* [Kibana](https://artifacts.elastic.co/downloads/kibana/kibana-6.7.0-x86_64.rpm)
-* [Filebeat](https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.7.0-x86_64.rpm)
+* [Elasticsearch](https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.7.0.tar.gz)
+* [Logstash](https://artifacts.elastic.co/downloads/logstash/logstash-6.7.0.tar.gz)
+* [Kibana](https://artifacts.elastic.co/downloads/kibana/kibana-6.7.0-x86_64.tar.gz)
+* [Filebeat](https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.7.0-x86_64.tar.gz)
 
 최신 버전은 [Elasticsearch 공식 홈페이지](https://www.elastic.co/downloads) 에서 다운로드 가능합니다.
 
