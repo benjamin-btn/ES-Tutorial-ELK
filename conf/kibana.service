@@ -10,7 +10,7 @@ Group=deploy
 # exist, it continues onward.
 EnvironmentFile=-/etc/default/kibana
 EnvironmentFile=-/etc/sysconfig/kibana
-ExecStart=/home/deploy/ELK/packages/kibana/bin/kibana "-c /home/deploy/ELK/packages/kibana/config/kibana.yml"
+ExecStart=/home/ec2-user/ES-Tutorial-ELK/packages/kibana/bin/kibana "-c /home/ec2-user/ES-Tutorial-ELK/packages/kibana/config/kibana.yml"
 Restart=always
 WorkingDirectory=/
 
