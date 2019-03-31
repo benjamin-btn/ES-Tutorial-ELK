@@ -22,7 +22,9 @@ Latest ELK Version. 6.7.0(2019/04/01 기준 Latest Ver.)
 ## ELK Tutorial 준비
 
 이 튜토리얼에서는 tar.gz 파일을 이용하여 실습합니다.
+
 설치는 non-root 계정으로 설치합니다.
+
 linux 배포판에 대해 패키지 설치를 지원합니다.
 
 ```bash
