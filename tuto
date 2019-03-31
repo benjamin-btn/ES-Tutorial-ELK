@@ -176,13 +176,13 @@ if [ -z $1 ]; then
         echo "#####################%%%%%%##############"
         echo "         1 : install elk packages"
         echo "         2 : set elk"
-        echo "         3 : start elk"
-        echo "         4 : standard input/output, no filters"
-        echo "         5 : standard input/output, simple filter"
-        echo "         6 : beats input, no filter, standard output"
-        echo "         7 : beats input, grok filter COMBINEDAPACHELOG, standard output"
-        echo "         8 : beats input, grok filter COMBINEDAPACHELOG, es output"
-        echo "         9 : beats input, grok filter COMBINEDAPACHELOG, es output with systemd"
+        echo "         3 : standard input/output, no filters"
+        echo "         4 : standard input/output, simple filter"
+        echo "         5 : beats input, no filter, standard output"
+        echo "         6 : beats input, grok filter COMBINEDAPACHELOG, standard output"
+        echo "         7 : beats input, grok filter COMBINEDAPACHELOG, es output"
+        echo "         8 : beats input, grok filter COMBINEDAPACHELOG, es output with systemd"
+        echo "         9 : start elk"
         echo "#########################################";
         exit 1;
 fi
@@ -190,12 +190,12 @@ fi
 case "$1" in
         "1" ) install_elk_packages;;
         "2" ) es_set; kb_set; fb_set;;
-        "3" ) es_start; ls_start; kb_start; fb_start;;
-	"4" ) no_filter;;
-        "5" ) simple_filter;;
-        "6" ) beats_filter;;
-        "7" ) apache_filter;;
-        "8" ) last_filter;;
-        "9" ) systemd_filter;;
+	"3" ) no_filter;;
+        "4" ) simple_filter;;
+        "5" ) beats_filter;;
+        "6" ) apache_filter;;
+        "7" ) last_filter;;
+        "8" ) systemd_filter;;
+        "9" ) es_start; ls_start; kb_start; fb_start;;
         *) echo "Incorrect Command" ;;
 esac
