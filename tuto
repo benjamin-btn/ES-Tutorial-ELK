@@ -48,9 +48,9 @@ if [ $USER == "root" ]; then
 	exit -1
 fi
 
-if [ $PWD != "/home/ec2-user/ELK" ]; then
+if [ $PWD != "/home/ec2-user/ES-Tutorial-ELK" ]; then
 	pwd
-	echo "/home/ec2-user/ELK path is permitted only"
+	echo "/home/ec2-user/ES-Tutorial-ELK path is permitted only"
 	exit -1
 fi
 
