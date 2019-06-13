@@ -39,9 +39,10 @@ LS_SVC="logstash.service"
 KB_SVC="kibana.service"
 FB_SVC="filebeat.service"
 
-
 USER=$(whoami)
 PWD=$(pwd)
+
+git pull
 
 if [ $USER == "root" ]; then
 	echo "root is not permitted"
